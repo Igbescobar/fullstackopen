@@ -1,23 +1,46 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import personService from '../service/persons'
 
-const SinglePersonDetails = ({ filteredPerson, deletePerson }) => {
+const SinglePersonDetails = ({ persons, setPersons, filter }) => {
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = () => {
+        personService
+            .getAll()
+            .then((response) => {
+                setPersons(response.data)
+            })
+    }
 
     const handleDeleteClick = (id) => {
         if (window.confirm('Do you really want to delete this person?')) {
-            return (
-                deletePerson(id)
-            )
+            personService
+                .deletePerson(id)
+                .then(() => {
+                    fetchData()
+                })
+                .catch(error => {
+                    console.error('Error deleting person:' + error);
+                })
         }
     }
+
+    const filteredPerson = persons.filter(person => {
+        return (
+            person.name.toLowerCase().includes(filter.toLowerCase())
+        )
+    })
 
     return (
         <div>
             <ul>
                 {filteredPerson.map((person) => (
-                    <li key={person.name}>
-                        {person.name}
-                        {person.number}
-                        <button onClick={(() => handleDeleteClick(person.id))}>delete</button>
+                    <li key={person._id}>
+                        {person.name} {person.number}
+                        <button onClick={(() => handleDeleteClick(person._id))}>delete</button>
                     </li>
                 ))}
             </ul>
