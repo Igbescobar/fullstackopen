@@ -1,122 +1,56 @@
+const config = require('./utils/config')
 const express = require('express')
 const app = express()
 
-const morgan = require('morgan')
 const cors = require('cors')
+const personsRouter = require('./controllers/person')
+const middleware = require('./utils/middleware')
+const logger = require('./utils/logger')
+const mongoose = require('mongoose')
 
-require('dotenv').config()
+mongoose.set('strictQuery', false)
 
-const Entry = require('./models/Entry')
+logger.info('connecting to', config.MONGODB_URI)
 
-app.use(express.static('dist'))
-app.use(express.json())
-app.use(morgan('tiny'))
-app.use(cors())
-
-app.get('/info', (request, response) => {
-  let totalNumberPersons = 0
-  const currentTime = new Date()
-  Entry
-    .find()
-    .then((person) => {
-      totalNumberPersons = person.length
-      response.send(`<p>Phonebook has info for ${totalNumberPersons} people
-    <br/>
-    <p>${currentTime}`
-      )
-    })
-})
-
-app.get('/api/persons', (request, response, next) => {
-  Entry
-    .find()
-    .then((person) => {
-      response.json(person)
-    })
-    .catch((error) => next(error))
-})
-
-app.post('/api/persons', (request, response, next) => {
-
-  const entry = new Entry({
-    name: request.body.name,
-    number: request.body.number,
+mongoose.connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info('connected to MongoDB')
+  })
+  .catch((error) => {
+    logger.error('error connecting to MongoDB:', error.message)
   })
 
-  entry
-    .save()
-    .then((savedPerson) => {
-      response.json(savedPerson)
-    })
-    .catch((error) => next(error))
+app.use(cors())
+app.use(express.static('dist'))
+app.use(express.json())
+app.use(middleware.requestLogger)
 
-  morgan.token('body', (req, res) => JSON.stringify(req.body))
-  app.use(morgan(':body'))
-})
+app.use('/api/persons', personsRouter)
 
-app.get('/api/persons/:id', (request, response, next) => {
-  const id = Number(request.params.id)
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
-  Entry
-    .findById(id)
-    .then((person => {
-      if (person) {
-        response.json(person)
-      } else {
-        response.status(404).end()
-      }
-    })
-      .catch((error) => next(error)))
-})
+module.export = app
 
-app.put('/api/persons/:id', (request, response, next) => {
-  const { name, number } = request.body
 
-  Entry
-    .findByIdAndUpdate(
-      request.params.id,
-      { name, number },
-      { new: true, runValidators: true, context: 'query' })
-    .then((updatedNote) => {
-      response.json(updatedNote)
-    })
-    .catch((error) => next(error))
-})
 
-app.delete('/api/persons/:id', (request, response, next) => {
+// const unknownEndpoint = (request, response) => {
+//   response.status(404).send({ error: 'unknown endpoint' })
+// }
 
-  Entry
-    .findByIdAndRemove(request.params.id)
-    .then((result) => {
-      if (result) {
-        response.status(204).end()
-      } else {
-        response.status(404).json({ error: 'Entry not found' })
-      }
-    })
-    .catch((error) => next(error))
-})
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
+// const errorHandler = (error, request, response, next) => {
+//   console.log(error.message)
 
-app.use(unknownEndpoint)
+//   if (error.name === 'CastError') {
+//     return response.status(400).send({ error: 'malformatted id' })
+//   } else if (error.name === 'ValidationError') {
+//     return response.status(400).json({ error: error.message })
+//   }
+//   next(error)
+// }
 
-const errorHandler = (error, request, response, next) => {
-  console.log(error.message)
 
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
-  }
-  next(error)
-}
-
-app.use(errorHandler)
-
-const PORT = process.env.PORT || 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+// app.listen(config.PORT, () => {
+//   logger.info(`Server running on port ${config.PORT}`)
+// })
