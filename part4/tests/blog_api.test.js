@@ -4,14 +4,18 @@ const helper = require('./testHelper.test')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const bcrypt = require('bcrypt')
+const User = require('../models/users')
 
 beforeEach(async () => {
-    await Blog.deleteMany({})
-    let blogObject = new Blog(helper.initialBlogs[0])
-    await blogObject.save()
-    blogObject = new Blog(helper.initialBlogs[1])
-    await blogObject.save()
-})
+    await Blog.deleteMany({});
+
+    const blogObjects = helper.initialBlogs.map(blog => new Blog(blog));
+    const savePromises = blogObjects.map(blogObject => blogObject.save());
+
+    await Promise.all(savePromises);
+});
+
 
 test('blogs are returned as json', async () => {
     await api
@@ -20,17 +24,17 @@ test('blogs are returned as json', async () => {
         .expect('Content-Type', /application\/json/)
 })
 
-test('there are two blogs', async () => {
+test('there are 5 blogs', async () => {
     const response = await api.get('/api/blogs')
 
-    expect(response.body).toHaveLength(2)
+    expect(response.body).toHaveLength(5)
 })
 
 test('all blogs are returned', async () => {
     const response = await api.get('/api/blogs')
 
 
-    expect(response.body).toHaveLength(initialBlogs.length)
+    expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
 
@@ -41,7 +45,7 @@ test('a specific blog is within the returned blogs', async () => {
 
     const title = response.body.map(r => r.title)
     expect(title).toContain(
-        'Sancho Panza'
+        'React patterns'
     )
 })
 
@@ -55,6 +59,7 @@ test('verifies the existence of an id property', async () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
+    console.log(resultBlog.body + blogToView)
     expect(resultBlog.body).toEqual(blogToView)
 })
 
@@ -64,8 +69,6 @@ test('verifies the creation of a new blog', async () => {
     const response = await api.post('/api/post')
 })
 
-const bcrypt = require('bcrypt')
-const User = require('../models/user')
 
 describe('when there is initially one user in db', () => {
     beforeEach(async () => {
