@@ -19,9 +19,10 @@ const App = () => {
 
   useEffect(() => {
     blogService
-      .getAll().then(blogs =>
+      .getAll().then((blogs) => {
+        blogs.sort((a, b) => b.likes - a.likes)
         setBlogs(blogs)
-      )
+      })
   }, [refreshBlog])
 
   useEffect(() => {
@@ -32,7 +33,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
 
   const handleLogin = async (createLogin) => {
 
@@ -45,7 +45,7 @@ const App = () => {
       setMessage('Log-in succesful')
       setTimeout(() => {
         setMessage(null)
-      }, 5000);
+      }, 5000)
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
@@ -68,7 +68,7 @@ const App = () => {
       setMessage(`a new blog "${blog.title}" by ${blog.author}`)
       setTimeout(() => {
         setMessage(null)
-      }, 5000);
+      }, 5000)
     } catch (exception) {
       setErrorMessage('Wrong values')
       setTimeout(() => {
@@ -79,6 +79,11 @@ const App = () => {
 
   const addLikes = async (id, blogObject) => {
     await blogService.update(id, blogObject)
+    setRefreshBlog(!refreshBlog)
+  }
+
+  const removeBlog = async (id) => {
+    await blogService.remove(id)
     setRefreshBlog(!refreshBlog)
   }
 
@@ -106,7 +111,7 @@ const App = () => {
           <h2>List of current Blogs</h2>
           {blogs.map(blog =>
             <div key={blog.id} >
-              <Blog blog={blog} user={user} addLikes={addLikes} />
+              <Blog blog={blog} user={user} addLikes={addLikes} removeBlog={removeBlog} />
             </div>
           )}
         </div>
