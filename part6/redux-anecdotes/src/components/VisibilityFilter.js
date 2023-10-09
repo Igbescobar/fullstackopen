@@ -1,6 +1,11 @@
+import { useDispatch } from "react-redux"
+import { filter } from "../reducers/filterReducer"
+
 const VisibilityFilter = () => {
+    const dispatch = useDispatch()
+
     const handleChange = (event) => {
-        console.log(event.target.value)
+        dispatch(filter(event.target.value))
     }
     const style = {
         marginBottom: 10
