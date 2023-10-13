@@ -68,9 +68,9 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  let content = useField('content')
-  const author = useField('author')
-  const info = useField('info')
+  const { reset: resetContent, ...content } = useField('content')
+  const { reset: resetAuthor, ...author } = useField('author')
+  const { reset: resetInfo, ...info } = useField('info')
   const navigate = useNavigate()
 
 
@@ -86,10 +86,9 @@ const CreateNew = (props) => {
   }
 
   const reset = () => {
-    content.reset()
-    // content.onChange({ target: { value: '' } });
-    // author.onChange({ target: { value: '' } });
-    // info.onChange({ target: { value: '' } });
+    resetContent()
+    resetAuthor()
+    resetInfo()
   }
 
   return (
