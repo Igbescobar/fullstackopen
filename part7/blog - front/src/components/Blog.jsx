@@ -1,6 +1,21 @@
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addLike, deleteBlogs } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, user, addLikes, removeBlog }) => {
+const Blog = ({ blog }) => {
+    const dispatch = useDispatch()
+
+    const authUser = useSelector(state => state.authUser)
+
+    const blogStyle = {
+        paddingTop: 10,
+        paddingLeft: 2,
+        border: 'solid',
+        borderWidth: 1,
+        marginBottom: 5
+    }
+
     const [visible, setVisible] = useState(false)
 
     const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -10,28 +25,18 @@ const Blog = ({ blog, user, addLikes, removeBlog }) => {
         setVisible(!visible)
     }
 
-    const updateBlog = () => {
-        const blogObject = {
-            title: blog.title,
-            author: blog.author,
-            url: blog.url,
-            likes: blog.likes + 1,
-        }
-        addLikes(blog.id, blogObject)
+    const handleLike = () => {
+        dispatch(addLike(blog))
+        dispatch(setNotification(`You added one like for "${blog.title}"!`, 5))
     }
 
-    const handleRemove = () => {
+    const handleDelete = () => {
         window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
-        removeBlog(blog.id)
+        dispatch(deleteBlogs(blog.id))
+        dispatch(setNotification(`You deleted "${blog.title}" !`, 5))
     }
 
-    const blogStyle = {
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: 'solid',
-        borderWidth: 1,
-        marginBottom: 5
-    }
+    const showDelete = blog.user.username === authUser.username ? true : false
 
     return (
         <div style={blogStyle} className='blog'>
@@ -44,14 +49,12 @@ const Blog = ({ blog, user, addLikes, removeBlog }) => {
                 <p>{blog.url}</p>
                 <p>
                     likes {blog.likes}
-                    <button id='like-button' onClick={updateBlog}>like</button>
+                    <button id='like-button' onClick={handleLike}>like</button>
                 </p >
                 <p>{blog.user !== null && blog.user.name}</p>
-                {user.id === blog.user.id ?
-                    <button id='delete-button' onClick={handleRemove}>remove</button>
-                    :
-                    <></>
-                }
+                {showDelete && <button onClick={handleDelete} id="remove-button">
+                    remove
+                </button>}
             </div>
         </div>
     )

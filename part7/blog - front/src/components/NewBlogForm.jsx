@@ -1,21 +1,30 @@
-import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const NewBlogForm = ({ createBlog }) => {
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+const NewBlogForm = () => {
+    const dispatch = useDispatch()
 
     const addBlog = (event) => {
         event.preventDefault()
-        createBlog({
+
+        const title = event.target.Title.value
+        const author = event.target.Author.value
+        const url = event.target.Url.value
+
+        event.target.Title.value = ''
+        event.target.Author.value = ''
+        event.target.Url.value = ''
+
+        const newBlog = {
             title: title,
             author: author,
             url: url,
             likes: 0
-        })
-        setTitle('')
-        setAuthor('')
-        setUrl('')
+        }
+
+        dispatch(createBlog(newBlog))
+        dispatch(setNotification(`a new blog ${title} by ${author} added`, 5))
     }
     return (
         <div>
@@ -26,22 +35,14 @@ const NewBlogForm = ({ createBlog }) => {
                 <div>
                     title
                     <input
-                        id='title'
-                        type="text"
-                        value={title}
                         name='Title'
-                        onChange={({ target }) => setTitle(target.value)}
                         placeholder='write title'
                     />
                 </div>
                 <div>
                     author
                     <input
-                        id='author'
-                        type="text"
-                        value={author}
                         name='Author'
-                        onChange={({ target }) => setAuthor(target.value)}
                         placeholder='write author'
 
                     />
@@ -49,11 +50,7 @@ const NewBlogForm = ({ createBlog }) => {
                 <div>
                     url
                     <input
-                        id='url'
-                        type="text"
-                        value={url}
                         name='Url'
-                        onChange={({ target }) => setUrl(target.value)}
                         placeholder='write url'
 
                     />
