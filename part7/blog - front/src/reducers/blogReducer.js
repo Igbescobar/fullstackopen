@@ -13,10 +13,14 @@ const blogSlice = createSlice({
         },
         voteBlog(state, action) {
             const id = action.payload.id
-            const blogToChange = action.payload
+            const blogToChange = state.find((blog) => blog.id === id)
+            const changedBlog = {
+                ...blogToChange,
+                likes: blogToChange.likes + 1
+            }
 
             return state.map(blog =>
-                blog.id !== id ? blog : blogToChange
+                blog.id !== id ? blog : changedBlog
             )
         },
         deleteBlog(state, action) {

@@ -1,7 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Notification from './components/Notification.jsx'
-import blogService from './services/blogsService.js'
-import loginService from './services/login'
 import LoginForm from './components/LoginForm.jsx'
 import NewBlogForm from './components/newBlogForm'
 import Togglable from './components/Togglable'
