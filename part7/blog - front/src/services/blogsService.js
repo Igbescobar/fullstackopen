@@ -16,24 +16,19 @@ const create = async newObject => {
   const config = {
     headers: { Authorization: token },
   }
-
   const response = await axios.post(baseUrl, newObject, config)
-  console.log('this is the new blog', response.data)
   return response.data
 }
 
-const update = async (updatedBlogData) => {
-  try {
-    const response = await axios.put(`${baseUrl}/${updatedBlogData.id}`, updatedBlogData);
-    console.log(response)
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+const update = async (newObject) => {
+  const response = await axios.put(`${baseUrl}/${newObject.id}`, newObject)
+  console.log('this is from the service', response)
+  return response.data
+}
 
 const remove = async (id) => {
-  const response = await axios.delete(`${baseUrl}/${id}`)
+  const response = await axios.delete(`${baseUrl}/${id}`);
+  return response.data;
 }
 
 

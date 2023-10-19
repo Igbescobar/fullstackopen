@@ -5,26 +5,25 @@ const blogSlice = createSlice({
     name: 'blog',
     initialState: [],
     reducers: {
-        appendBlog(state, action) {
-            state.concat(action.payload)
+        appendBlog: (state, action) => {
+            return state.concat(action.payload);
         },
-        setBlog(state, action) {
-            return action.payload
+        setBlog: (state, action) => {
+            return action.payload;
         },
-        voteBlog(state, action) {
+        voteBlog: (state, action) => {
             const id = action.payload.id
-            const blogToChange = state.find((blog) => blog.id === id)
-            const changedBlog = {
-                ...blogToChange,
-                likes: blogToChange.likes + 1
-            }
+            console.log('this is the object', action.payload)
+
+            const blogToChange = action.payload
 
             return state.map(blog =>
-                blog.id !== id ? blog : changedBlog
+                blog.id !== id ? blog : blogToChange
             )
         },
-        deleteBlog(state, action) {
-            state.filter((blog) => blog.id !== action.payload.id)
+        deleteBlog: (state, action) => {
+            const deletedBlogId = action.payload.id;
+            return state.filter(blog => blog.id !== deletedBlogId);
         }
     }
 })
@@ -48,24 +47,28 @@ export const createBlog = (content) => {
 export const addLike = blog => {
     return async dispatch => {
         try {
-            const updatedBlog = await blogsService.update({
-                ...blog,
-                likes: blog.likes + 1
-            });
-            console.log('After the backend call. Updated blog:', updatedBlog);
+            const updatedBlog = { ...blog, likes: blog.likes + 1 };
+
+            await blogsService.update(updatedBlog);
+
             dispatch(voteBlog(updatedBlog));
+
         } catch (error) {
-            console.error('Error updating blog likes:', error);
+            console.error("Error while liking blog:", error);
         }
-    }
-}
+    };
+};
+
+
 
 export const deleteBlogs = id => {
     return async dispatch => {
-        const newBlog = await blogsService.remove(id)
-        dispatch(deleteBlog(newBlog))
-
-    }
-}
+        try {
+            await blogsService.remove(id);
+        } catch (error) {
+            console.error("Error while deleting blog:", error);
+        }
+    };
+};
 
 export default blogSlice.reducer
