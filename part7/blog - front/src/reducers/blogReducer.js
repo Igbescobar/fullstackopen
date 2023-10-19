@@ -22,8 +22,8 @@ const blogSlice = createSlice({
             )
         },
         deleteBlog: (state, action) => {
-            const deletedBlogId = action.payload.id;
-            return state.filter(blog => blog.id !== deletedBlogId);
+            const id = action.payload
+            return state.filter(blog => blog.id !== id);
         }
     }
 })
@@ -59,12 +59,12 @@ export const addLike = blog => {
     };
 };
 
-
-
 export const deleteBlogs = id => {
     return async dispatch => {
         try {
-            await blogsService.remove(id);
+            const deletedBlog = await blogsService.remove(id);
+            console.log('this is the blog', deleteBlog)
+            dispatch(deleteBlog(id))
         } catch (error) {
             console.error("Error while deleting blog:", error);
         }
