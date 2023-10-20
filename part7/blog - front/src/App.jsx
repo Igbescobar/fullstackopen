@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import Notification from './components/Notification.jsx'
 import LoginForm from './components/LoginForm.jsx'
 import NewBlogForm from './components/newBlogForm'
 import Togglable from './components/Togglable'
@@ -12,9 +11,9 @@ import UsersDisplay from './components/UsersDisplay.jsx'
 import {
   Routes, Route, Link
 } from 'react-router-dom'
-import Blog from './components/Blog.jsx'
 import { Nav, Navbar } from 'react-bootstrap'
 import User from './components/User.jsx'
+import IndividualBlog from './components/IndividualBlog.jsx'
 
 
 const App = () => {
@@ -35,16 +34,15 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    dispatch(logout())
+  }
 
   if (authUsers === null) {
     return (
       <LoginForm />
     )
-  }
-
-  const handleLogout = async (event) => {
-    event.preventDefault()
-    dispatch(logout())
   }
 
   const padding = {
@@ -54,7 +52,6 @@ const App = () => {
   const Home = () => {
     return (
       <div>
-        <h2>Blogs App</h2>
         <Togglable buttonLabel="new blog" ref={blogFormRef}>
           <NewBlogForm />
         </Togglable>
@@ -90,11 +87,16 @@ const App = () => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+      <br />
+      <h2>Blog app</h2>
+      <br />
 
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/users' element={<UsersDisplay />} />
         <Route path='/users/:id' element={<User />} />
+        <Route path='/blogs' element={<BlogList />} />
+        <Route path='/blogs/:id' element={<IndividualBlog />} />
       </Routes>
     </div>
 

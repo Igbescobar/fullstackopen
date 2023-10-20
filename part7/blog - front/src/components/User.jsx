@@ -5,11 +5,11 @@ const User = () => {
     const users = useSelector(state => state.users)
     const id = useParams().id
     const user = users.find(n => n.id === id)
-    console.log(user)
 
     if (!user) {
         return null
     }
+
     return (
         <div>
             <h2>{user.username}</h2>
