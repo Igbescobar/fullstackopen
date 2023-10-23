@@ -14,6 +14,7 @@ import {
 import { Nav, Navbar } from 'react-bootstrap'
 import User from './components/User.jsx'
 import IndividualBlog from './components/IndividualBlog.jsx'
+import { initializeComments } from './reducers/commentReducer.js'
 
 
 const App = () => {

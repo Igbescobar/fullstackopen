@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addLike } from "../reducers/blogReducer";
+import BlogComment from "./BlogComment";
 
 const IndividualBlog = () => {
     const { id } = useParams()
@@ -23,6 +24,8 @@ const IndividualBlog = () => {
             <a href="${blog.url}">{blog.url}</a>
             <p>{blog.likes} likes <button onClick={handleLikes}>like</button></p>
             <p>added by {blog.author}</p>
+            <BlogComment id={id} />
+
         </div>
     );
 }
