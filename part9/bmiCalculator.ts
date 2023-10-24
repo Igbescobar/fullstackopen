@@ -21,7 +21,7 @@ const parseArguments = (args: string[]): CalcuValues => {
     }
 }
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
     const heightMeters = height / 100
     const heightSquared = Math.pow(heightMeters, 2)
     const bmi = weight / heightSquared;
@@ -63,5 +63,5 @@ try {
     console.log(errorMessage)
 }
 
-export default calculateBmi
+
 
