@@ -1,3 +1,26 @@
+interface findIbm {
+    target: number;
+    time: number[];
+}
+
+const parseArguments = (args: string[]): findIbm => {
+    if (args.length < 4) throw new Error('Not enough arguments');
+
+    const time: number[] = []
+
+    for (let i = 3; i < args.length; i++) {
+        if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+            time.push(Number(args[i]))
+        } else {
+            throw new Error('Provided values were not numbers!')
+        }
+    }
+    return {
+        target: Number(args[2]),
+        time: time
+    }
+}
+
 interface Solution {
     periodLength: number;
     trainingDays: number;
@@ -8,7 +31,7 @@ interface Solution {
     average: number;
 }
 
-const calculateExercises = (a: number[], target: number): Solution => {
+const calculateExercises = (target: number, a: number[]): Solution => {
     const periodLength = a.length
 
     const trainingDays = a.filter(n => n > 0).length
@@ -52,5 +75,13 @@ const calculateExercises = (a: number[], target: number): Solution => {
         average
     }
 }
-
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+    const { target, time } = parseArguments(process.argv);
+    console.log(calculateExercises(target, time))
+} catch (error: unknown) {
+    let errorMessage = 'Something bad happened.'
+    if (error instanceof Error) {
+        errorMessage += 'Error:' + error.message
+    }
+    console.log(errorMessage)
+}
