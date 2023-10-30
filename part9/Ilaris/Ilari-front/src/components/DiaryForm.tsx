@@ -82,8 +82,8 @@ const DiaryForm: React.FC<DiaryFormProps> = ({ diaries, setDiaries, date, setDat
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <form onSubmit={createDiaryEntry}>
                 <TextField
+                    type='date'
                     id='outlined-basic'
-                    label='Date'
                     variant='outlined'
                     placeholder='YYYY-MM-DD'
                     value={date}
