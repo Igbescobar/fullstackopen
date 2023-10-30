@@ -1,30 +1,44 @@
-import { useEffect, useState } from "react"
-import { Diary } from './type'
-import { getAllDiaries } from "./services/diaryService"
+import { useEffect, useState } from 'react';
+import { Diary, Visibility, Weather } from './type';
+import { getAllDiaries } from './services/diaryService';
+import DiaryEntries from './components/diaryEntries';
+import DiaryForm from './components/DiaryForm';
 
 function App() {
-  const [diaries, setDiaries] = useState<Diary[]>([])
+  const [diaries, setDiaries] = useState<Diary[]>([]);
+  const [newDiary, setNewDiary] = useState('');
+  const [date, setDate] = useState('');
+  const [weather, setWeather] = useState(Weather.Cloudy);
+  const [visibility, setVisibility] = useState(Visibility.Poor);
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
     getAllDiaries()
       .then(data => {
-        setDiaries(data)
-      })
-  }, [])
+        setDiaries(data);
+      });
+  }, []);
 
   return (
     <div>
-      <h1>Diary entries</h1>
-      {diaries.map((diary) => (
-        <div key={diary.id}>
-          <h3>{diary.date}</h3>
-          <p>visibility: {diary.visibility}</p>
-          <p>weather: {diary.weather}</p>
-        </div>
-      ))}
+      <DiaryForm
+        diaries={diaries}
+        setDiaries={setDiaries}
+        date={date}
+        setDate={setDate}
+        weather={weather}
+        setWeather={setWeather}
+        visibility={visibility}
+        setVisibility={setVisibility}
+        comment={comment}
+        setComment={setComment}
+        setNewDiary={setNewDiary}
 
+      />
+
+      <DiaryEntries diaries={diaries} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
