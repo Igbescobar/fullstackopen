@@ -11,6 +11,7 @@ function App() {
   const [weather, setWeather] = useState(Weather.Cloudy);
   const [visibility, setVisibility] = useState(Visibility.Poor);
   const [comment, setComment] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     getAllDiaries()
@@ -33,9 +34,9 @@ function App() {
         comment={comment}
         setComment={setComment}
         setNewDiary={setNewDiary}
-
+        errorMessage={errorMessage}
+        setErrorMessage={setErrorMessage}
       />
-
       <DiaryEntries diaries={diaries} />
     </div>
   );

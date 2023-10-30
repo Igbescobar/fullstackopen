@@ -1,6 +1,7 @@
 import { Button, Grid, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { Diary, Visibility, Weather } from '../type';
 import { createDiary } from '../services/diaryService';
+import axios from 'axios';
 
 interface DiaryFormProps {
     diaries: Diary[]
@@ -14,9 +15,11 @@ interface DiaryFormProps {
     comment: string
     setComment: React.Dispatch<React.SetStateAction<string>>
     setNewDiary: React.Dispatch<React.SetStateAction<string>>
+    errorMessage: string
+    setErrorMessage: React.Dispatch<React.SetStateAction<string>>
 }
 
-const DiaryForm: React.FC<DiaryFormProps> = ({ diaries, setDiaries, date, setDate, weather, setWeather, visibility, setVisibility, comment, setComment, setNewDiary }) => {
+const DiaryForm: React.FC<DiaryFormProps> = ({ diaries, setDiaries, date, setDate, weather, setWeather, visibility, setVisibility, comment, setComment, setNewDiary, errorMessage, setErrorMessage }) => {
 
     interface weatherOptions {
         label: string
@@ -61,14 +64,22 @@ const DiaryForm: React.FC<DiaryFormProps> = ({ diaries, setDiaries, date, setDat
 
     const createDiaryEntry = async (e: React.SyntheticEvent<Element, Event>) => {
         e.preventDefault();
-        const data = await createDiary({ date, weather, visibility, comment });
-        setDiaries(diaries.concat(data));
+        try {
+            const data = await createDiary({ date, weather, visibility, comment });
+            setDiaries(diaries.concat(data));
+
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                setErrorMessage(error.response?.data);
+            }
+        }
         setNewDiary('');
     };
 
     return (
         <div>
             <h1>Add new entry</h1>
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <form onSubmit={createDiaryEntry}>
                 <TextField
                     id='outlined-basic'
