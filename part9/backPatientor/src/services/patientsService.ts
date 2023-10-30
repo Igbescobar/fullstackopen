@@ -9,16 +9,21 @@ const getPatient = (): PatientsEntry[] => {
     return patientsData;
 }
 
+const singlePatient = (id: string): PatientsEntry | undefined => {
+    return patientsData.find(w => w.id === id)
+}
+
 const noSsnPatientsData = (): NoSsnPatient[] => {
     return patientsData.map((patient) => {
-        const { id, name, dateOfBirth, gender, occupation } = patient
+        const { id, name, dateOfBirth, gender, occupation, entries } = patient
 
         return {
             id,
             name,
             dateOfBirth,
             gender,
-            occupation
+            occupation,
+            entries
         }
     })
 }
@@ -34,5 +39,6 @@ const addPatient = (entry: NewPatient): PatientsEntry => {
 export default {
     noSsnPatientsData,
     getPatient,
-    addPatient
+    addPatient,
+    singlePatient
 }

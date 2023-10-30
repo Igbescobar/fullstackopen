@@ -22,4 +22,18 @@ router.post('/', (req, res) => {
     }
 });
 
+router.get('/:id', (req, res) => {
+    try {
+        const id = req.params.id
+        const singlePatient = patientsService.singlePatient(id)
+        res.json(singlePatient)
+    } catch (error: unknown) {
+        let errorMessage = 'Something went wrong.';
+        if (error instanceof Error) {
+            errorMessage += 'Error: ' + error.message
+        }
+        res.status(400).send(errorMessage)
+    }
+})
+
 export default router
