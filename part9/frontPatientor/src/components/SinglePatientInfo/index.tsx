@@ -17,7 +17,6 @@ const genderIcon = (gender: Gender | undefined) => {
     }
 }
 const SinglePatientInfo = ({ patient }: Props) => {
-    console.log(patient)
     return (
         <div>
             <h2>{patient?.name}{genderIcon(patient?.gender)}</h2>

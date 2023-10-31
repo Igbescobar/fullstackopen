@@ -10,7 +10,6 @@ import SinglePatientInfo from "./components/SinglePatientInfo";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
-  console.log(patients)
 
   useEffect(() => {
     const fetchPatientList = async () => {
