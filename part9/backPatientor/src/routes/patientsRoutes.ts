@@ -5,7 +5,7 @@ import newPatientEntry from '../utils'
 const router = express.Router()
 
 router.get('/', (_req, res) => {
-    res.send(patientsService.noSsnPatientsData())
+    res.send(patientsService.getPatient())
 })
 
 router.post('/', (req, res) => {

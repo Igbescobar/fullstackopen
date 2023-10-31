@@ -15,7 +15,7 @@ const singlePatient = (id: string): PatientsEntry | undefined => {
 
 const noSsnPatientsData = (): NoSsnPatient[] => {
     return patientsData.map((patient) => {
-        const { id, name, dateOfBirth, gender, occupation, entries } = patient
+        const { id, name, dateOfBirth, gender, occupation } = patient
 
         return {
             id,
@@ -23,7 +23,6 @@ const noSsnPatientsData = (): NoSsnPatient[] => {
             dateOfBirth,
             gender,
             occupation,
-            entries
         }
     })
 }
