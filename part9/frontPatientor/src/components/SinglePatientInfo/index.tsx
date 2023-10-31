@@ -1,9 +1,10 @@
-import { Gender, PatientsEntry } from '../../types'
+import { DiagnosesEntry, Gender, PatientsEntry } from '../../types'
 import WomanIcon from '@mui/icons-material/Woman';
 import ManIcon from '@mui/icons-material/Man';
 
 interface Props {
     patient: PatientsEntry | null | undefined
+    diagnoses: DiagnosesEntry[]
 }
 
 const genderIcon = (gender: Gender | undefined) => {
@@ -16,7 +17,7 @@ const genderIcon = (gender: Gender | undefined) => {
             return null
     }
 }
-const SinglePatientInfo = ({ patient }: Props) => {
+const SinglePatientInfo = ({ patient, diagnoses }: Props) => {
     return (
         <div>
             <h2>{patient?.name}{genderIcon(patient?.gender)}</h2>
@@ -27,11 +28,15 @@ const SinglePatientInfo = ({ patient }: Props) => {
             {patient?.entries.map(entry => (
                 <div key={entry.id}>
                     <p >{entry.date} {entry.description}</p>
-                    {entry.diagnosisCodes?.map(code => (
-                        <ul key={code}>
-                            <li>{code}</li>
-                        </ul>
-                    ))}
+                    {entry.diagnosisCodes?.map(code => {
+                        const diagno = diagnoses.find(diagnose => diagnose.code === code)?.name
+                        return (
+                            <ul key={code}>
+                                <li>{code} {diagno ? diagno : null}</li>
+                            </ul>
+                        )
+
+                    })}
                 </div>
             ))
             }

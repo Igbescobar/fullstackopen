@@ -1,13 +1,13 @@
-export enum Gender {
-  Male = 'male',
-  Female = 'female',
-  Other = 'other'
-}
-
 export interface DiagnosesEntry {
   code: string;
   name: string;
   latin?: string;
+}
+
+export enum Gender {
+  Male = 'male',
+  Female = 'female',
+  Other = 'other'
 }
 
 interface BaseEntry {
@@ -49,7 +49,6 @@ interface OccupationalHealthcareEntry extends BaseEntry {
   type: 'OccupationalHealthcare';
   employerName: string;
   sickLeave?: SickLeave
-
 }
 
 export type Entry =
