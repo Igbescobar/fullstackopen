@@ -1,9 +1,8 @@
-import { Gender, NewPatient } from "./types";
+import { Gender, NewPatient } from "../types";
 
 const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
 }
-
 
 const parseName = (name: unknown): string => {
     if (!name || !isString(name)) {
@@ -47,7 +46,6 @@ const parseOccupation = (occupation: unknown): string => {
     }
     return occupation
 }
-
 
 const newPatientEntry = (object: unknown): NewPatient => {
     if (!object || typeof object !== 'object') {

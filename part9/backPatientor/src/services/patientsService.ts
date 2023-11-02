@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import patientsData from '../../data/patients'
 
-import { NewPatient, NoSsnPatient, PatientsEntry } from '../types'
+import { Entry, EntryWithoutId, NewPatient, NoSsnPatient, PatientsEntry } from '../types'
 
 import { v1 as uuid } from 'uuid'
 
@@ -35,9 +35,21 @@ const addPatient = (entry: NewPatient): PatientsEntry => {
     return newPatient
 }
 
+const addEntry = (patient: PatientsEntry, entry: EntryWithoutId): Entry => {
+    const id = uuid();
+    const newEntry = {
+        id,
+        ...entry
+    };
+
+    patient.entries.push(newEntry);
+    return newEntry;
+};
+
 export default {
     noSsnPatientsData,
     getPatient,
     addPatient,
-    singlePatient
+    singlePatient,
+    addEntry
 }
